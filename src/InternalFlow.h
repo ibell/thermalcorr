@@ -1,28 +1,19 @@
 #ifndef TWOPHASEHTDP_H
 #define TWOPHASEHTDP_H
 
-#define EXPORT_CODE
-#define CONVENTION
+#include "CoolProp/CPState.h"
 
 // Notes: The format for the doxygen string must strictly follow the template in order to be converted to Python. Non-matching elements will be dropped
 // Things that are supported: inline math, in both reST and doxygen
 
-/// Shah Condensation 
-/// from Shah, M., 1976. A New Correlation for Heat Transfer During Boiling Flow Through Pipes. ASHRAE Transactions 82, 66-86.
-/// @param Fluid The CoolProp-compliant fluid name
-/// @param G Mass Flux [kg/m^2/s]
-/// @param D Diameter [m]
-/// @param p Pressure [Pa]
-/// @param x Quality [-]
-/// @return HTC Heat transfer coefficient [W/m^2/K]
-EXPORT_CODE double CONVENTION Shah_Condensation_HTC(char *Fluid, double G, double D, double p, double x);
+namespace Microchannel
+{
 
 /// Sung-Min Kim, Issam Mudawar, "Universal approach to predicting two-phase frictional pressure drop for adiabatic
 /// and condensing mini/micro-channel flows", International Journal of Heat and Mass Transfer 55 (2012) 3246–3261
-/// @param Fluid The CoolProp-compliant fluid name
+/// @param CPS CoolPropStateClassSI instance
 /// @param G Mass Flux [kg/m^2/s]
 /// @param Dh Hydraulic Diameter [m]
-/// @param p Pressure [Pa]
 /// @param beta Aspect ratio (W/H) [-] (<0 for non-rectangular channel)
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
@@ -82,74 +73,30 @@ and the frictional pressure gradient by
 \f]
 
 */
-EXPORT_CODE double CONVENTION Kim_Mudawar_2012_AdiabaticCondensing_Microchannel_DPDZ_f(char *Fluid, double G, double Dh, double p, double beta, double x);
-
-/// Homogeneous equilibrium model using the Adams formulation for the two-phase viscosity
-/// @param Fluid The CoolProp-compliant fluid name
-/// @param G Mass Flux [kg/m^2/s]
-/// @param Dh Hydraulic Diameter [m]
-/// @param p Pressure [Pa]
-/// @param x Quality [-]
-/// @return dpdz Pressure gradient [Pa/m]
-EXPORT_CODE double CONVENTION HEM_DPDZ_f(char *Fluid, double G, double Dh, double p, double x);
+double Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double x);
 
 /// Sung-Min Kim, Issam Mudawar, "Universal approach to predicting two-phase frictional pressure drop for 
 /// mini/micro-channel saturated flow boiling", International Journal of Heat and Mass Transfer 58 (2013) 718–734
-/// @param Fluid The CoolProp-compliant fluid name
+/// @param CPS CoolPropStateClassSI instance
 /// @param G Mass Flux [kg/m^2/s]
 /// @param Dh Hydraulic Diameter [m]
-/// @param p Pressure [Pa]
 /// @param beta Aspect ratio (W/H) [-] (<0 for non-rectangular channel)
 /// @param q_fluxH Heat flux based on heated perimeter[W/m^2]
 /// @param PH_PF Ratio of heated perimeter to wetted perimeter [-]
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
-EXPORT_CODE double CONVENTION Kim_Mudawar_2013_Boiling_Microchannel_DPDZ_f(char *Fluid, double G, double Dh, double p, double beta, double q_fluxH, double PH_PF, double x);
-
-/// A. Cavallini, D. Del Col, M. Matkovic, L. Rossetto, "Frictional pressure drop during vapour-liquid flow in minichannels: Modelling
-/// and experimental evaluation", International Journal of Heat and Fluid Flow 30 (2009) 131–139
-/// @param Fluid The CoolProp-compliant fluid name
-/// @param G Mass Flux [kg/m^2/s]
-/// @param Dh Hydraulic Diameter [m]
-/// @param p Pressure [Pa]
-/// @param x Quality [-]
-/// @return dpdz Pressure gradient [Pa/m]
-/// Erratum: log() in equation 8 for E is actually log_10, or base-10 logarithm, not natural logarithm
-EXPORT_CODE double CONVENTION Cavallini_2009_AnnularMist_DPDZ_f(char *Fluid, double G, double Dh, double p, double x);
-
-/// Frictional pressure drop of Lockhart-Martinelli in tubes
-/// Lockhart, R.W., Martinelli, R.C., 1949, Proposed Correlation of Data for Isothermal Two-Phase 
-/// Two-Component Flow in Pipes. Chemical Engineering Progress. v. 45, 39-48
-/// @param Fluid The CoolProp-compliant fluid name
-/// @param G Mass Flux [kg/m^2/s]
-/// @param Dh Hydraulic Diameter [m]
-/// @param p Pressure [Pa]
-/// @param x Quality [-]
-/// @return dpdz Pressure gradient [Pa/m]
-EXPORT_CODE double CONVENTION Lockhart_Martinelli_1949_DPDZ_f(char *Fluid, double G, double Dh, double p, double x);
-
-/// Friedel, L. (1979) Improved friction pressure drop correlations for horizontal and vertical 
-/// two-phase pipe flow. European Two-Phase Flow Group Meeting, Ispra, Italy, paper E2
-/// @param Fluid The CoolProp-compliant fluid name
-/// @param G Mass Flux [kg/m^2/s]
-/// @param Dh Hydraulic Diameter [m]
-/// @param p Pressure [Pa]
-/// @param x Quality [-]
-/// @return dpdz Pressure gradient [Pa/m]
-EXPORT_CODE double CONVENTION Friedl_1979_DPDZ_f(char *Fluid, double G, double Dh, double p, double x);
+double Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x);
 
 /// Stefan S. Bertsch, Eckhard A. Groll, Suresh V. Garimella, 
 /// "A composite heat transfer correlation for saturated flow boiling in small channels"
 /// International Journal of Heat and Mass Transfer 52 (2009) 2110-2118
-/// @param Fluid The CoolProp-compliant fluid name
+/// @param CPS CoolPropStateClassSI instance
 /// @param G Mass Flux [kg/m^2/s]
 /// @param Dh Hydraulic Diameter [m]
-/// @param p Pressure [Pa]
 /// @param q_flux Heat flux based on heated perimeter[W/m^2]
 /// @param L Length [m]
 /// @param x Quality [-]
 /// @return HTC Heat transfer coefficient [W/m^2/K]
-
 /*!
 Description
 ===========
@@ -180,17 +127,64 @@ Finally the overall two-phase heat transfer coefficient is given by
 \tilde h_{2\phi} = \tilde h_{nb}(1-x)+\tilde h_{conv,2\phi}[1+80(x^2-x^6)\exp(-0.6\mathrm{Co})]
 \f]
 */
+double Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, double Dh, double q_flux, double L, double x);
+};
 
-EXPORT_CODE double CONVENTION Bertsch_2009_Boiling_Microchannel_HTC(char *Fluid, double G, double Dh, double p, double q_flux, double L, double x);
+namespace GeneralInternal
+{
+
+/// Shah Condensation 
+/// from Shah, M., 1976. A New Correlation for Heat Transfer During Boiling Flow Through Pipes. ASHRAE Transactions 82, 66-86.
+/// @param CPS CoolPropStateClassSI instance
+/// @param G Mass Flux [kg/m^2/s]
+/// @param D Diameter [m]
+/// @param x Quality [-]
+/// @return HTC Heat transfer coefficient [W/m^2/K]
+double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x);
+
+/// Homogeneous equilibrium model using the Adams formulation for the two-phase viscosity
+/// @param CPS CoolPropStateClassSI instance
+/// @param G Mass Flux [kg/m^2/s]
+/// @param Dh Hydraulic Diameter [m]
+/// @param x Quality [-]
+/// @return dpdz Pressure gradient [Pa/m]
+double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
+
+/// A. Cavallini, D. Del Col, M. Matkovic, L. Rossetto, "Frictional pressure drop during vapour-liquid flow in minichannels: Modelling
+/// and experimental evaluation", International Journal of Heat and Fluid Flow 30 (2009) 131–139
+/// @param CPS CoolPropStateClassSI instance
+/// @param G Mass Flux [kg/m^2/s]
+/// @param Dh Hydraulic Diameter [m]
+/// @param x Quality [-]
+/// @return dpdz Pressure gradient [Pa/m]
+/// Erratum: log() in equation 8 for E is actually log_10, or base-10 logarithm, not natural logarithm
+double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
+
+/// Frictional pressure drop of Lockhart-Martinelli in tubes
+/// Lockhart, R.W., Martinelli, R.C., 1949, Proposed Correlation of Data for Isothermal Two-Phase 
+/// Two-Component Flow in Pipes. Chemical Engineering Progress. v. 45, 39-48
+/// @param CPS CoolPropStateClassSI instance
+/// @param G Mass Flux [kg/m^2/s]
+/// @param Dh Hydraulic Diameter [m]
+/// @param x Quality [-]
+/// @return dpdz Pressure gradient [Pa/m]
+double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
+
+/// Friedel, L. (1979) Improved friction pressure drop correlations for horizontal and vertical 
+/// two-phase pipe flow. European Two-Phase Flow Group Meeting, Ispra, Italy, paper E2
+/// @param CPS CoolPropStateClassSI instance
+/// @param G Mass Flux [kg/m^2/s]
+/// @param Dh Hydraulic Diameter [m]
+/// @param x Quality [-]
+/// @return dpdz Pressure gradient [Pa/m]
+double Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
 
 /// Accelerational pressure drop using the slip ratio definition of Zivi
-/// @param Fluid The CoolProp-compliant fluid name
+/// @param CPS CoolPropStateClassSI instance
 /// @param G Mass Flux [kg/m^2/s]
-/// @param p Pressure [Pa]
 /// @param x1 Inlet Quality [-]
 /// @param x2 Outlet Quality [-]
 /// @return HTC Heat transfer coefficient [Pa/m]
-
 /*!
 Description
 -----------
@@ -219,5 +213,8 @@ where \f$\Delta p_A\f$ is negative if the pressure is dropping in going from qua
     
 is 0 or 1, one part is zero and the other is an indeterminate form of 0/0.  One evaluation of L'Hopital's rule can be used to show that if the quality is zero, the term in Equation \ref{eq:bracketedtermDPa} is equal to \f$v_f\f$, or if the quality is 1, this term is equal to \f$v_g\f$.
 */
-EXPORT_CODE double CONVENTION Zivi_DPDZ_a(char *Fluid, double G, double p, double x1, double x2);
+double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2);
+};
+
+
 #endif

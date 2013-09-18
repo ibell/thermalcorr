@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;C:\Users\Belli\Documents\Code\thermal-correlations\src\CoolProp\CoolProp&quot;"
+				AdditionalIncludeDirectories="..\externals\coolprop;..\src"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -173,11 +173,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\src\main.cpp"
+				RelativePath="..\src\InternalFlow.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\TwoPhaseHTDP.cpp"
+				RelativePath=".\main.cpp"
 				>
 			</File>
 		</Filter>
@@ -187,7 +187,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath="..\src\TwoPhaseHTDP.h"
+				RelativePath="..\src\InternalFlow.h"
 				>
 			</File>
 		</Filter>
@@ -201,163 +201,191 @@
 			Name="CoolProp"
 			>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\AllFluids.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\AllFluids.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Brine.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\Brine.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Brine.h"
+				RelativePath="..\externals\coolprop\CoolProp\Brine.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CoolProp.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\CoolProp.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CoolProp.h"
+				RelativePath="..\externals\coolprop\CoolProp\CoolProp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CoolPropTools.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\CoolPropDLL.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CoolPropTools.h"
+				RelativePath="..\externals\coolprop\CoolProp\CoolPropDLL.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CPExceptions.h"
+				RelativePath="..\externals\coolprop\CoolProp\CoolPropTools.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CPState.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\CoolPropTools.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CPState.h"
+				RelativePath="..\externals\coolprop\CoolProp\CPExceptions.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CriticalSplineConstants.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\CPState.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CriticalSplineConstants.h"
+				RelativePath="..\externals\coolprop\CoolProp\CPState.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\CriticalSplineConstants_T.h"
+				RelativePath="..\externals\coolprop\CoolProp\CriticalSplineConstants.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\FloodProp.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\CriticalSplineConstants.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\FloodProp.h"
+				RelativePath="..\externals\coolprop\CoolProp\CriticalSplineConstants_T.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\FluidClass.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\FluidClass.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\FluidClass.h"
+				RelativePath="..\externals\coolprop\CoolProp\FluidClass.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Helmholtz.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\gitrevision.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Helmholtz.h"
+				RelativePath="..\externals\coolprop\CoolProp\GlobalConstants.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\HumidAirProp.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\Helmholtz.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\HumidAirProp.h"
+				RelativePath="..\externals\coolprop\CoolProp\Helmholtz.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Ice.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\HumidAirProp.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Ice.h"
+				RelativePath="..\externals\coolprop\CoolProp\HumidAirProp.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\IncompLiquid.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\Ice.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\IncompLiquid.h"
+				RelativePath="..\externals\coolprop\CoolProp\Ice.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\MatrixMath.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\IncompLiquid.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\MatrixMath.h"
+				RelativePath="..\externals\coolprop\CoolProp\IncompLiquid.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\PengRobinson.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\JSON_CAS.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\PengRobinson.h"
+				RelativePath="..\externals\coolprop\CoolProp\JSON_code.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\REFPROP.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\MatrixMath.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\REFPROP.h"
+				RelativePath="..\externals\coolprop\CoolProp\MatrixMath.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\REFPROP_lib.h"
+				RelativePath="..\externals\coolprop\CoolProp\Mixtures.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Solvers.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\Mixtures.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Solvers.h"
+				RelativePath="..\externals\coolprop\CoolProp\PengRobinson.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Spline.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\PengRobinson.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\Spline.h"
+				RelativePath="..\externals\coolprop\CoolProp\REFPROP.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\svnrevision.h"
+				RelativePath="..\externals\coolprop\CoolProp\REFPROP.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\TTSE.cpp"
+				RelativePath="..\externals\coolprop\CoolProp\REFPROP_lib.h"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\TTSE.h"
+				RelativePath="..\externals\coolprop\CoolProp\Solvers.cpp"
 				>
 			</File>
 			<File
-				RelativePath="..\src\CoolProp\CoolProp\version.h"
+				RelativePath="..\externals\coolprop\CoolProp\Solvers.h"
+				>
+			</File>
+			<File
+				RelativePath="..\externals\coolprop\CoolProp\Spline.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\externals\coolprop\CoolProp\Spline.h"
+				>
+			</File>
+			<File
+				RelativePath="..\externals\coolprop\CoolProp\TTSE.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\externals\coolprop\CoolProp\TTSE.h"
+				>
+			</File>
+			<File
+				RelativePath="..\externals\coolprop\CoolProp\Units.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\externals\coolprop\CoolProp\Units.h"
+				>
+			</File>
+			<File
+				RelativePath="..\externals\coolprop\CoolProp\version.h"
 				>
 			</File>
 		</Filter>

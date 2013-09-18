@@ -1,26 +1,20 @@
-#include "CoolProp.h"
-#include "CPState.h"
-#include "float.h"
 
-double Kim_Mudawar_2013_Boiling_Microchannel_DPDZ_f(char *Fluid, double G, double Dh, double p, double beta, double q_fluxH, double PH_PF, double x)
+
+#include "float.h"
+#include "InternalFlow.h"
+
+double Microchannel::Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x)
 {
 	double f_f,f_g,C,Cnon_boiling;
 	bool f_laminar, g_laminar;
 
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
+	double rho_f = (*CPS).rhoL();
+	double mu_f = (*CPS).viscL(); //[kg/m-s]
+	double rho_g = (*CPS).rhoV();
+	double mu_g = (*CPS).viscV(); //[kg/m-s]
+	double sigma = (*CPS).keyed_output(iI); //[N/m]
 
-	///TODO: Update units
-	p /= 1000;
-
-	CPS.update(iP,p,iQ,x);
-
-	double rho_f = CPS.rhoL();
-	double mu_f = CPS.viscL(); //[kg/m-s]
-	double rho_g = CPS.rhoV();
-	double mu_g = CPS.viscV(); //[kg/m-s]
-	double sigma = CPS.keyed_output(iI); //[N/m]
-
-	double h_fg = (CPS.hV()-CPS.hL())*1000; // [J/kg]
+	double h_fg = ((*CPS).hV()-(*CPS).hL()); // [J/kg]
 
 	double Re_f = G*(1-x)*Dh/mu_f;
 	double Re_g = G*x*Dh/mu_g;
@@ -104,23 +98,16 @@ double Kim_Mudawar_2013_Boiling_Microchannel_DPDZ_f(char *Fluid, double G, doubl
 	double two_phase_multiplier = 1+C/sqrt(X_squared)+1/X_squared;
 	return dpdz_f*two_phase_multiplier;
 }
-double Kim_Mudawar_2012_AdiabaticCondensing_Microchannel_DPDZ_f(char *Fluid, double G, double Dh, double p, double beta, double x)
+double Microchannel::Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double x)
 {
 	double f_f,f_g,C;
 	bool f_laminar, g_laminar;
 
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
-
-	///TODO: Update units
-	p /= 1000;
-
-	CPS.update(iP, p, iQ, x);
-
-	double rho_f = CPS.rhoL();
-	double mu_f = CPS.viscL(); //[kg/m-s, or Pa-s]
-	double rho_g = CPS.rhoV();
-	double mu_g = CPS.viscV(); //[kg/m-s, or Pa-s]
-	double sigma = CPS.keyed_output(iI); //[N/m]
+	double rho_f = (*CPS).rhoL();
+	double mu_f = (*CPS).viscL(); //[kg/m-s, or Pa-s]
+	double rho_g = (*CPS).rhoV();
+	double mu_g = (*CPS).viscV(); //[kg/m-s, or Pa-s]
+	double sigma = (*CPS).keyed_output(iI); //[N/m]
 
 	double Re_f = G*(1-x)*Dh/mu_f;
 	double Re_g = G*x*Dh/mu_g;
@@ -192,21 +179,47 @@ double Kim_Mudawar_2012_AdiabaticCondensing_Microchannel_DPDZ_f(char *Fluid, dou
 	double two_phase_multiplier = 1+C/sqrt(X_squared)+1/X_squared;
 	return dpdz_f*two_phase_multiplier;
 }
+double Microchannel::Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, double Dh, double q_flux, double L, double x)
+{
+	double rho_f = (*CPS).rhoL();
+	double mu_f = (*CPS).viscL(); //[kg/m-s]
+	double cp_f = (*CPS).cpL(); //[J/kg-K]
+	double k_f = (*CPS).condL(); //[W/m-K]
+	double rho_g = (*CPS).rhoV();
+	double mu_g = (*CPS).viscV(); //[kg/m-s]
+	double cp_g = (*CPS).cpV(); //[J/kg-K]
+	double k_g = (*CPS).condV(); //[W/m-K]
+	double sigma = (*CPS).keyed_output(iI); //[N/m]
+	double Pr_f = cp_f * mu_f / k_f; //[-]
+	double Pr_g = cp_g * mu_g / k_g; //[-]
+	double pr = (*CPS).p() / (*CPS).keyed_output(iPcrit); //[-]
+	double M = (*CPS).keyed_output(iMM); //[kg/kmol]
+	double g = 9.81;
 
-EXPORT_CODE double CONVENTION HEM_DPDZ_f(char *Fluid, double G, double Dh, double p, double x)
+	double Re_fo = G*Dh/mu_f;
+	double Re_go = G*Dh/mu_g;
+	
+	// Cooper correlation for the nucleate boiling contribution
+    double h_nb = 55*pow(pr,0.12)*pow(-log10(pr),-0.55)*pow(M,-0.5)*pow(q_flux,0.67);
+    double h_conv_l = (3.66+(0.0668*Dh/L*Re_fo*Pr_f)/(1+0.04*pow(Dh/L*Re_fo*Pr_f,2.0/3.0)))*k_f/Dh;
+    double h_conv_g = (3.66+(0.0668*Dh/L*Re_go*Pr_g)/(1+0.04*pow(Dh/L*Re_go*Pr_g,2.0/3.0)))*k_g/Dh;
+    double Co = sqrt(sigma/(g*(rho_f-rho_g)*Dh*Dh));
+    
+    // Things here depend on quality
+	double h_conv_tp = h_conv_l*(1-x)+h_conv_g*x;
+    double h_TP = h_nb*(1-x)+h_conv_tp*(1.0+80.0*(pow(x,2)-pow(x,6))*exp(-0.6*Co));
+
+	return h_TP;
+}
+
+double GeneralInternal::HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double f_tp;
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
 
-	///TODO: Update units
-	p /= 1000;
-
-	CPS.update(iP,p,iQ,x);
-
-	double rho_f = CPS.rhoL();
-	double mu_f = CPS.viscL(); //[kg/m-s]
-	double rho_g = CPS.rhoV();
-	double mu_g = CPS.viscV(); //[kg/m-s]
+	double rho_f = (*CPS).rhoL();
+	double mu_f = (*CPS).viscL(); //[kg/m-s]
+	double rho_g = (*CPS).rhoV();
+	double mu_g = (*CPS).viscV(); //[kg/m-s]
 	double v_f = 1/rho_f;
 	double v_fg = 1/rho_g-1/rho_f;
 
@@ -227,22 +240,17 @@ EXPORT_CODE double CONVENTION HEM_DPDZ_f(char *Fluid, double G, double Dh, doubl
 	return -2*f_tp*v_f*G*G/Dh*(1+x*v_fg/v_f);
 }
 
-double Friedl_1979_DPDZ_f(char *Fluid, double G, double Dh, double p, double x)
+double GeneralInternal::Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double f_fo,f_go;
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
-	///TODO: Update units
-	p /= 1000;
 
-	CPS.update(iP, p, iQ, x);
-
-	double rho_f = CPS.rhoL();
-	double mu_f = CPS.viscL(); //[kg/m-s]
-	double rho_g = CPS.rhoV();
-	double mu_g = CPS.viscV(); //[kg/m-s]
+	double rho_f = (*CPS).rhoL();
+	double mu_f = (*CPS).viscL(); //[kg/m-s]
+	double rho_g = (*CPS).rhoV();
+	double mu_g = (*CPS).viscV(); //[kg/m-s]
 	double Re_fo = G*Dh/mu_f;
 	double Re_go = G*Dh/mu_g;
-	double sigma = CPS.keyed_output(iI); //[N/m]
+	double sigma = (*CPS).keyed_output(iI); //[N/m]
 	double rhoH = 1/(x/rho_g+(1-x)/rho_f);
 
 	if (Re_fo < 2000){
@@ -281,20 +289,14 @@ double Friedl_1979_DPDZ_f(char *Fluid, double G, double Dh, double p, double x)
 	return dpdz_f*two_phase_multiplier;
 }
 
-double Lockhart_Martinelli_1949_DPDZ_f(char *Fluid, double G, double Dh, double p, double x)
+double GeneralInternal::Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double f_f,f_g,w,dpdz_f,dpdz_g,X,C,phi_g2,phi_f2;
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
 
-	///TODO: Update units
-	p /= 1000;
-
-	CPS.update(iP, p, iQ, x);
-
-	double rho_f = CPS.rhoL();
-	double mu_f = CPS.viscL(); //[kg/m-s]
-	double rho_g = CPS.rhoV();
-	double mu_g = CPS.viscV(); //[kg/m-s] 
+	double rho_f = (*CPS).rhoL();
+	double mu_f = (*CPS).viscL(); //[kg/m-s]
+	double rho_g = (*CPS).rhoV();
+	double mu_g = (*CPS).viscV(); //[kg/m-s] 
 
 	// 1. Find the Reynolds Number for each phase based on the actual flow rate of the individual phase
 	double Re_f = G*(1-x)*Dh/mu_f;
@@ -378,25 +380,18 @@ double Lockhart_Martinelli_1949_DPDZ_f(char *Fluid, double G, double Dh, double 
 	else{
         return dpdz_f*phi_f2;
 	}
-
 }
-double Cavallini_2009_AnnularMist_DPDZ_f(char *Fluid, double G, double Dh, double p, double x)
+double GeneralInternal::Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double rho_GC,E_new,change;
 
-	///TODO: Update units
-	p /= 1000;
+	double rho_f = (*CPS).rhoL(); // [kg/m^3]
+	double mu_f = (*CPS).viscL(); // [kg/m-s]
+	double rho_g = (*CPS).rhoV(); // [kg/m^3]
+	double mu_g = (*CPS).viscV(); // [kg/m-s]
+	double sigma = (*CPS).keyed_output(iI); //[N/m]
 
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
-	CPS.update(iP,p,iQ,x);
-
-	double rho_f = CPS.rhoL();
-	double mu_f = CPS.viscL(); //[kg/m-s]
-	double rho_g = CPS.rhoV();
-	double mu_g = CPS.viscV(); //[kg/m-s]
-	double sigma = CPS.keyed_output(iI); //[N/m]
-
-	double pr = p / CPS.keyed_output(iPcrit); //[-]
+	double pr = (*CPS).p() / (*CPS).keyed_output(iPcrit); //[-]
 
 	double Re_fo = G*Dh/mu_f;
 
@@ -431,20 +426,14 @@ double Cavallini_2009_AnnularMist_DPDZ_f(char *Fluid, double G, double Dh, doubl
 	return dpdz_fo*two_phase_multiplier;
 }
 
-double Shah_Condensation_HTC(char *Fluid, double G, double D, double p, double x)
+double GeneralInternal::Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x)
 {
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
 
-	///TODO: Update units
-	p /= 1000;
-	
-	CPS.update(iP,p,iQ,x);
-
-	double mu_f = CPS.viscL(); //[kg/m-s]
-	double cp_f = CPS.cpL()*1000; //[J/kg-K]
-	double k_f = CPS.condL()*1000; //[W/m-K]
+	double mu_f = (*CPS).viscL(); //[kg/m-s]
+	double cp_f = (*CPS).cpL(); //[J/kg-K]
+	double k_f = (*CPS).condL(); //[W/m-K]
 	double Pr_f = cp_f * mu_f / k_f; //[-]
-	double Pstar = p / CPS.keyed_output(iPcrit); //[-]
+	double Pstar = (*CPS).p() / (*CPS).keyed_output(iPcrit); //[-]
 
 	// Liquid heat transfer coefficient
 	double h_L = 0.023 * pow(G*D/mu_f,0.8) * pow(Pr_f,0.4) * k_f / D; //[W/m^2-K]
@@ -455,61 +444,14 @@ double Shah_Condensation_HTC(char *Fluid, double G, double D, double p, double x
 	return  HTC;
 }
 
-double Bertsch_2009_Boiling_Microchannel_HTC(char *Fluid, double G, double Dh, double p, double q_flux, double L, double x)
-{
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
-
-	///TODO: Update units
-	p /= 1000;
-	
-	CPS.update(iP,p,iQ,x);
-
-	double rho_f = CPS.rhoL();
-	double mu_f = CPS.viscL(); //[kg/m-s]
-	double cp_f = CPS.cpL()*1000; //[J/kg-K]
-	double k_f = CPS.condL()*1000; //[W/m-K]
-	double rho_g = CPS.rhoV();
-	double mu_g = CPS.viscV(); //[kg/m-s]
-	double cp_g = CPS.cpV()*1000; //[J/kg-K]
-	double k_g = CPS.condV()*1000; //[W/m-K]
-	double sigma = CPS.keyed_output(iI); //[N/m]
-	double Pr_f = cp_f * mu_f / k_f; //[-]
-	double Pr_g = cp_g * mu_g / k_g; //[-]
-	double pr = p / CPS.keyed_output(iPcrit); //[-]
-	double M = CPS.keyed_output(iMM); //[kg/kmol]
-	double g = 9.81;
-
-	double Re_fo = G*Dh/mu_f;
-	double Re_go = G*Dh/mu_g;
-	
-	// Cooper correlation for the nucleate boiling contribution
-    double h_nb = 55*pow(pr,0.12)*pow(-log10(pr),-0.55)*pow(M,-0.5)*pow(q_flux,0.67);
-    double h_conv_l = (3.66+(0.0668*Dh/L*Re_fo*Pr_f)/(1+0.04*pow(Dh/L*Re_fo*Pr_f,2.0/3.0)))*k_f/Dh;
-    double h_conv_g = (3.66+(0.0668*Dh/L*Re_go*Pr_g)/(1+0.04*pow(Dh/L*Re_go*Pr_g,2.0/3.0)))*k_g/Dh;
-    double Co = sqrt(sigma/(g*(rho_f-rho_g)*Dh*Dh));
-    
-    // Things here depend on quality
-	double h_conv_tp = h_conv_l*(1-x)+h_conv_g*x;
-    double h_TP = h_nb*(1-x)+h_conv_tp*(1.0+80.0*(pow(x,2)-pow(x,6))*exp(-0.6*Co));
-
-	return h_TP;
-}
-
-EXPORT_CODE double CONVENTION Zivi_DPDZ_a(char *Fluid, double G, double p, double x1, double x2)
+double GeneralInternal::Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2)
 {
 	double term1, term2;
-
-	CoolPropStateClass CPS = CoolPropStateClass(Fluid);
-
-	///TODO: Update units
-	p /= 1000;
 	
-	CPS.update(iP, p, iQ, x1);
-	
-	double rho_f = CPS.rhoL();
-	double rho_g = CPS.rhoV();
-	double v_f = 1/CPS.rhoL();
-	double v_g = 1/CPS.rhoV();
+	double rho_f = (*CPS).rhoL();
+	double rho_g = (*CPS).rhoV();
+	double v_f = 1/(*CPS).rhoL();
+	double v_g = 1/(*CPS).rhoV();
 	double S = pow(v_g/v_f,1.0/3.0);
 	
 	// Void fraction at x1
