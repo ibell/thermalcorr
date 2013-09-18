@@ -13,3 +13,13 @@ Hierarchy:
   * Heat transfer and pressure drop
     * Fins
     * 
+
+Developers
+==========
+
+To date, the only wrapper available is the python wrapper.
+
+At the console run:
+
+    cd wrappers/Python
+    python setup.py install
