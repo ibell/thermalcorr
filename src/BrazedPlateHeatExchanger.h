@@ -42,7 +42,13 @@ namespace BrazedPlateHX
 	class BPHEGeometry
 	{
 	public:
-		BPHEGeometry(){PlateAmplitude = _HUGE; PlateWavelength = _HUGE; Bp = _HUGE; Lp = _HUGE; InclinationAngle = _HUGE; PlateThickness = _HUGE;};
+		BPHEGeometry(){PlateAmplitude = _HUGE; 
+					   PlateWavelength = _HUGE; 
+					   InclinationAngle = _HUGE; 
+					   PlateThickness = _HUGE;
+					   Bp = _HUGE; 
+					   Lp = _HUGE; };
+					   
 		double PlateAmplitude; ///< The amplitude of the corrugations of the plates [m]
 		double PlateWavelength; ///< The wavelength of the plate corrugations [m]
 		double PlateThickness; ///< The thickness of the plates [m]
