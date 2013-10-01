@@ -2,11 +2,13 @@
 #include "CoolProp/CoolProp.h"
 #include "CoolProp/CPState.h"
 #include "InternalFlow.h"
+#include "Microchannel.h"
 #include <iostream>
 #include "time.h"
 
 int main()
 {
+	double tt = conversion_factor("H*H/P/P");
 	clock_t t1,t2;
 
 	CoolPropStateClassSI CPS("Propane");

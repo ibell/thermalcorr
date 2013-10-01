@@ -173,11 +173,19 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\src\BrazedPlateHeatExchanger.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\src\InternalFlow.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\main.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\src\Microchannel.cpp"
 				>
 			</File>
 		</Filter>
@@ -187,7 +195,15 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath="..\src\BrazedPlateHeatExchanger.h"
+				>
+			</File>
+			<File
 				RelativePath="..\src\InternalFlow.h"
+				>
+			</File>
+			<File
+				RelativePath="..\src\Microchannel.h"
 				>
 			</File>
 		</Filter>
