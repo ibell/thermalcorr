@@ -3,7 +3,7 @@
 
 #include "../externals/coolprop/CoolProp/CPState.h"
 
-namespace BrazedPlateHeatExchanger
+namespace BrazedPlateHX
 {
 	/*
 	Based on the single-phase pressure drop and heat transfer correlations
@@ -39,25 +39,26 @@ namespace BrazedPlateHeatExchanger
 		 phi is the inclination angle
 	*/
 
-	class BPHEInputs
+	class BPHEGeometry
 	{
 	public:
-		double PlateAmplitude, 
-			PlateWavelength, 
-			PlateConductivity,
-			Bp, 
-			Lp, 
-			Nplates, 
-			PlateLength,
-			InclinationAngle,
-			Re,
-			HTC,
-			mdot_channel
-			;
-		int MoreChannels;
+		BPHEGeometry(){PlateAmplitude = _HUGE; PlateWavelength = _HUGE; Bp = _HUGE; Lp = _HUGE; InclinationAngle = _HUGE; PlateThickness = _HUGE;};
+		double PlateAmplitude; ///< The amplitude of the corrugations of the plates [m]
+		double PlateWavelength; ///< The wavelength of the plate corrugations [m]
+		double PlateThickness; ///< The thickness of the plates [m]
+		double InclinationAngle; ///< The inclination angle of the plates [rad]
+		double Bp; ///< The width between the centers of the ports [m]
+		double Lp; ///< The length between the centers of the ports [m]
+	};
+	struct BPHEData
+	{
+		double Re, ///< Reynolds number [-]
+			   HTC, ///< Heat transfer coefficient [W/m^2/K]
+			   mdot_per_channel, ///< Mass flow per channel [kg/s]
+			   DELTAP; ///< Pressure change [Pa]
 		CoolPropStateClassSI CPS;
 	};
-	void BPHE_1phase(BPHEInputs BPHE);
+	void BPHE_1phase(BPHEGeometry, BPHEData *);
 };
 
 #endif
