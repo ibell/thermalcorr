@@ -9,6 +9,7 @@ Hierarchy:
   * Heat transfer and pressure drop
     * Tubes/non-circular ducts
     * Microchannels
+    * Brazed Plate Heat Exchangers
 * External Flow
   * Heat transfer and pressure drop
     * Fins
