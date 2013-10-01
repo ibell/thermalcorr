@@ -1,7 +1,7 @@
 #ifndef MICROCHANNEL_H
 #define MICROCHANNEL_H
 
-#include "CoolProp/CPState.h"
+#include "../externals/coolprop/CoolProp/CPState.h"
 
 namespace Microchannel
 {

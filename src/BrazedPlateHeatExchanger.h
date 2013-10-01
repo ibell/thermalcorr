@@ -1,7 +1,7 @@
 #ifndef THERMALCORR_BRAZED_PLATE_HEAT_EXCHANGER_H
 #define THERMALCORR_BRAZED_PLATE_HEAT_EXCHANGER_H
 
-#include "CoolProp/CPState.h"
+#include "../externals/coolprop/CoolProp/CPState.h"
 
 namespace BrazedPlateHeatExchanger
 {

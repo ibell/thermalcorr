@@ -1,7 +1,7 @@
 #ifndef INTERNALFLOW_H
 #define INTERNALFLOW_H
 
-#include "CoolProp/CPState.h"
+#include "../externals/coolprop/CoolProp/CPState.h"
 
 namespace GeneralInternal
 {

@@ -1,8 +1,8 @@
 
-#include "CoolProp/CoolProp.h"
-#include "CoolProp/CPState.h"
-#include "InternalFlow.h"
-#include "Microchannel.h"
+#include "../externals/coolprop/CoolProp/CoolProp.h"
+#include "../externals/coolprop/CoolProp/CPState.h"
+#include "../src/InternalFlow.h"
+#include "../src/Microchannel.h"
 #include <iostream>
 #include "time.h"
 
