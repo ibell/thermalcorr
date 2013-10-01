@@ -31,8 +31,8 @@ void BrazedPlateHeatExchanger::BPHE_1phase(BPHEInputs BPHE)
     // Calculate the friction factor zeta
     double phi = BPHE.InclinationAngle;
     
-	double zeta0, zeta1_0, zeta1, a,b,c;
-	if (Re_g<2000)
+	double zeta0, zeta1_0, zeta1, a, b, c;
+	if (Re_g < 2000)
 	{
         zeta0 = 64/Re_g;
         zeta1_0 = 597/Re_g+3.85;
