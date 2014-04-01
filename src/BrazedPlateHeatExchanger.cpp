@@ -2,7 +2,9 @@
 
 #include "math.h"
 
-void BrazedPlateHX::BPHE_1phase(BPHEGeometry geo, BPHEData *BPHE)
+namespace ThermalCorr{
+namespace BrazedPlateHX{
+void BPHE_1phase(BPHEGeometry geo, BPHEData *BPHE)
 {  
     double X = 2*M_PI*geo.PlateAmplitude/geo.PlateWavelength;
     double PHI = 1.0/6.0*(1+sqrt(1+X*X)+4*sqrt(1+X*X/2));
@@ -67,3 +69,5 @@ void BrazedPlateHX::BPHE_1phase(BPHEGeometry geo, BPHEData *BPHE)
     // Pressure drop [Pa]
     BPHE->DELTAP = Hg*eta_g*eta_g*geo.Lp/(rho_g*dh*dh*dh);
 }
+};
+};

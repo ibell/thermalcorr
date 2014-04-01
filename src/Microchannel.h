@@ -1,8 +1,10 @@
 #ifndef MICROCHANNEL_H
 #define MICROCHANNEL_H
 
-#include "../externals/coolprop/CoolProp/CPState.h"
+#include "CPState.h"
 
+namespace ThermalCorr
+{
 namespace Microchannel
 {
 
@@ -11,7 +13,7 @@ namespace Microchannel
 /// @param CPS CoolPropStateClassSI instance
 /// @param G Mass Flux [kg/m^2/s]
 /// @param Dh Hydraulic Diameter [m]
-/// @param beta Aspect ratio (W/H) [-] (<0 for non-rectangular channel)
+/// @param beta Aspect ratio (W/H) [-] (set <0 for non-rectangular channel)
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
 /*!
@@ -125,5 +127,5 @@ Finally the overall two-phase heat transfer coefficient is given by
 */
 double Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, double Dh, double q_flux, double L, double x);
 };
-
+};
 #endif

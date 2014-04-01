@@ -1,8 +1,11 @@
 
 #include "float.h"
 #include "Microchannel.h"
+#include "InternalFlow.h"
 
-double Microchannel::Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x)
+namespace ThermalCorr{
+namespace Microchannel{
+double Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x)
 {
 	double f_f,f_g,C,Cnon_boiling;
 	bool f_laminar, g_laminar;
@@ -97,7 +100,7 @@ double Microchannel::Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *CPS, double G
 	double two_phase_multiplier = 1+C/sqrt(X_squared)+1/X_squared;
 	return dpdz_f*two_phase_multiplier;
 }
-double Microchannel::Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double x)
+double Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double x)
 {
 	double f_f,f_g,C;
 	bool f_laminar, g_laminar;
@@ -178,7 +181,7 @@ double Microchannel::Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G
 	double two_phase_multiplier = 1+C/sqrt(X_squared)+1/X_squared;
 	return dpdz_f*two_phase_multiplier;
 }
-double Microchannel::Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, double Dh, double q_flux, double L, double x)
+double Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, double Dh, double q_flux, double L, double x)
 {
 	double rho_f = (*CPS).rhoL();
 	double mu_f = (*CPS).viscL(); //[kg/m-s]
@@ -210,3 +213,5 @@ double Microchannel::Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, doubl
 
 	return h_TP;
 }
+};
+};

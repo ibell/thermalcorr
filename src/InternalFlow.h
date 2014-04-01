@@ -1,8 +1,10 @@
 #ifndef INTERNALFLOW_H
 #define INTERNALFLOW_H
 
-#include "../externals/coolprop/CoolProp/CPState.h"
+#include "CPState.h"
 
+namespace ThermalCorr
+{
 namespace GeneralInternal
 {
 /// Shah Condensation 
@@ -87,6 +89,6 @@ is 0 or 1, one part is zero and the other is an indeterminate form of 0/0.  One 
 */
 double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2);
 };
-
+};
 
 #endif

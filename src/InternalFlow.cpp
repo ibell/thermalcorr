@@ -2,7 +2,9 @@
 #include "float.h"
 #include "InternalFlow.h"
 
-double GeneralInternal::HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+namespace ThermalCorr{
+namespace GeneralInternal{
+double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double f_tp;
 
@@ -30,7 +32,7 @@ double GeneralInternal::HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double D
 	return -2*f_tp*v_f*G*G/Dh*(1+x*v_fg/v_f);
 }
 
-double GeneralInternal::Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double f_fo,f_go;
 
@@ -79,7 +81,7 @@ double GeneralInternal::Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, 
 	return dpdz_f*two_phase_multiplier;
 }
 
-double GeneralInternal::Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double f_f,f_g,w,dpdz_f,dpdz_g,X,C,phi_g2,phi_f2;
 
@@ -171,7 +173,7 @@ double GeneralInternal::Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CP
         return dpdz_f*phi_f2;
 	}
 }
-double GeneralInternal::Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 {
 	double rho_GC,E_new,change;
 
@@ -216,7 +218,7 @@ double GeneralInternal::Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double 
 	return dpdz_fo*two_phase_multiplier;
 }
 
-double GeneralInternal::Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x)
+double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x)
 {
 
 	double mu_f = (*CPS).viscL(); //[kg/m-s]
@@ -234,7 +236,7 @@ double GeneralInternal::Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, doubl
 	return  HTC;
 }
 
-double GeneralInternal::Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2)
+double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2)
 {
 	double term1, term2;
 	
@@ -271,3 +273,5 @@ double GeneralInternal::Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double 
 
 	return G*G*(term1-term2);
 }
+};
+};

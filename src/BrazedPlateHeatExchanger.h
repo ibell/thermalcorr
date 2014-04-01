@@ -1,8 +1,10 @@
 #ifndef THERMALCORR_BRAZED_PLATE_HEAT_EXCHANGER_H
 #define THERMALCORR_BRAZED_PLATE_HEAT_EXCHANGER_H
 
-#include "../externals/coolprop/CoolProp/CPState.h"
+#include "CPState.h"
 
+namespace ThermalCorr
+{
 namespace BrazedPlateHX
 {
 	/*
@@ -66,5 +68,5 @@ namespace BrazedPlateHX
 	};
 	void BPHE_1phase(BPHEGeometry, BPHEData *);
 };
-
+};
 #endif
