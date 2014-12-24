@@ -1,7 +1,7 @@
 #ifndef INTERNALFLOW_H
 #define INTERNALFLOW_H
 
-#include "CPState.h"
+#include "CoolProp/CPState.h"
 
 namespace ThermalCorr
 {

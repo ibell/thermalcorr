@@ -1,7 +1,7 @@
 #ifndef MICROCHANNEL_H
 #define MICROCHANNEL_H
 
-#include "CPState.h"
+#include "CoolProp/CPState.h"
 
 namespace ThermalCorr
 {
