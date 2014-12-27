@@ -1,6 +1,6 @@
 
-#include "externals/coolprop/CoolProp/CoolProp.h"
-#include "externals/coolprop/CoolProp/CPState.h"
+#include "AbstractState.h"
+#include "crossplatform_shared_ptr.h"
 #include "src/InternalFlow.h"
 #include "src/Microchannel.h"
 #include <iostream>
@@ -8,12 +8,11 @@
 
 int main()
 {
-	double tt = conversion_factor("H*H/P/P");
 	clock_t t1,t2;
 
-	CoolPropStateClassSI CPS("Propane");
-	CPS.update(iP,1500000,iQ,0.5);
-	double Kim = ThermalCorr::Microchannel::Kim_Mudawar_2012_DPDZ_f(&CPS, 100, 0.001, 1.0, 0.5);
+	shared_ptr<CoolProp::AbstractState> AS(CoolProp::AbstractState::factory("HEOS","Propane"));
+	AS->update(CoolProp::PQ_INPUTS,1500000,0.5);
+	double Kim = ThermalCorr::Microchannel::Kim_Mudawar_2012_DPDZ_f(*AS, 100, 0.001, 1.0, 0.5);
 
 	//double p = IProps(iP,iT,40+273.15,iQ,0,get_Fluid_index("R134a"))*1000;
 	//double Kim4 = Kim_Mudawar_2012_AdiabaticCondensing_Microchannel_DPDZ_f("R134a", 100, 0.0014, p, 1.0, 0.75);
@@ -33,13 +32,13 @@ int main()
 	long N = 1000*10;
 	double rr = 4;
 	
-	CPS.update(iP,1500000,iQ,0);
+	AS->update(CoolProp::PQ_INPUTS,1500000,0);
 
 	for (double Q = 0; Q <= 1.0; Q+=1/((double)N-1))
 	{	
 		//IProps(iT,iP,1500,iQ,Q+1e-20*Q,get_Fluid_index("Propane"));
 
-		rr = ThermalCorr::Microchannel::Kim_Mudawar_2012_DPDZ_f(&CPS, 100, 0.01, 1, Q);
+		rr = ThermalCorr::Microchannel::Kim_Mudawar_2012_DPDZ_f(*AS, 100, 0.01, 1, Q);
 	}
 	t2 = clock();
 	printf("elapsed time %g us/call\n",double(t2-t1)/CLOCKS_PER_SEC/N*1e6);

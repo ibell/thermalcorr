@@ -1,10 +1,7 @@
 #include "BrazedPlateHeatExchanger.h"
-
 #include "math.h"
 
-namespace ThermalCorr{
-namespace BrazedPlateHX{
-void BPHE_1phase(BPHEGeometry geo, BPHEData *BPHE)
+void ThermalCorr::BrazedPlateHX::BPHE_1phase(BPHEGeometry geo, BPHEData &BPHE)
 {  
     double X = 2*M_PI*geo.PlateAmplitude/geo.PlateWavelength;
     double PHI = 1.0/6.0*(1+sqrt(1+X*X)+4*sqrt(1+X*X/2));
@@ -21,13 +18,13 @@ void BPHE_1phase(BPHEGeometry geo, BPHEData *BPHE)
     // Hydraulic diameter
     double dh = 4*geo.PlateAmplitude/PHI;
     
-	double rho_g = BPHE->CPS.rho();
-	double k_g = BPHE->CPS.conductivity();
-	double eta_g = BPHE->CPS.viscosity();
-    double Pr_g = BPHE->CPS.cp()*BPHE->CPS.viscosity()/BPHE->CPS.conductivity();
+	double rho_g = BPHE.AS->rhomass();
+	double k_g = BPHE.AS->conductivity();
+	double eta_g = BPHE.AS->viscosity();
+    double Pr_g = BPHE.AS->cpmass()*BPHE.AS->viscosity()/BPHE.AS->conductivity();
     
     double eta_g_w = eta_g; // TODO: allow for temperature dependence?
-    double w_g = BPHE->mdot_per_channel/BPHE->CPS.rho()/(2*geo.PlateAmplitude*geo.Bp);
+    double w_g = BPHE.mdot_per_channel/BPHE.AS->rhomass()/(2*geo.PlateAmplitude*geo.Bp);
     double Re_g = rho_g*w_g*dh/eta_g;
     
     // Calculate the friction factor zeta
@@ -64,10 +61,8 @@ void BPHE_1phase(BPHEGeometry geo, BPHEData *BPHE)
     double Nu = c_q*pow(Pr_g,1.0/3.0)*pow(eta_g/eta_g_w,1.0/6.0)*pow(2*Hg*sin(2*phi),q);
     
     // Heat transfer coefficient [W/m^2-K]
-    BPHE->HTC = Nu*k_g/dh;
+    BPHE.HTC = Nu*k_g/dh;
     
     // Pressure drop [Pa]
-    BPHE->DELTAP = Hg*eta_g*eta_g*geo.Lp/(rho_g*dh*dh*dh);
+    BPHE.DELTAP = Hg*eta_g*eta_g*geo.Lp/(rho_g*dh*dh*dh);
 }
-};
-};

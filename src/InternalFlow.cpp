@@ -2,13 +2,11 @@
 #include "float.h"
 #include "InternalFlow.h"
 
-namespace ThermalCorr{
-namespace GeneralInternal{
-double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::HEM_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double f_tp;
 
-	double rho_f = (*CPS).rhoL();
+	double rho_f = AS.get.rhoL();
 	double mu_f = (*CPS).viscL(); //[kg/m-s]
 	double rho_g = (*CPS).rhoV();
 	double mu_g = (*CPS).viscV(); //[kg/m-s]
@@ -32,7 +30,7 @@ double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 	return -2*f_tp*v_f*G*G/Dh*(1+x*v_fg/v_f);
 }
 
-double Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::Friedl_1979_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double f_fo,f_go;
 
@@ -81,7 +79,7 @@ double Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double
 	return dpdz_f*two_phase_multiplier;
 }
 
-double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::Lockhart_Martinelli_1949_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double f_f,f_g,w,dpdz_f,dpdz_g,X,C,phi_g2,phi_f2;
 
@@ -173,7 +171,7 @@ double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, doub
         return dpdz_f*phi_f2;
 	}
 }
-double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::Cavallini_2009_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double rho_GC,E_new,change;
 
@@ -218,7 +216,7 @@ double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, dou
 	return dpdz_fo*two_phase_multiplier;
 }
 
-double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x)
+double ThermalCorr::GeneralInternal::Shah_1976_HTC(CoolProp::AbstractState &AS, double G, double D, double x)
 {
 
 	double mu_f = (*CPS).viscL(); //[kg/m-s]
@@ -236,7 +234,7 @@ double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x)
 	return  HTC;
 }
 
-double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2)
+double ThermalCorr::GeneralInternal::Zivi_DPDZ_a(CoolProp::AbstractState &AS, double G, double x1, double x2)
 {
 	double term1, term2;
 	
@@ -273,5 +271,3 @@ double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2)
 
 	return G*G*(term1-term2);
 }
-};
-};
