@@ -1,7 +1,7 @@
 #ifndef MICROCHANNEL_H
 #define MICROCHANNEL_H
 
-#include "CoolProp/CPState.h"
+#include "AbstractState.h"
 
 namespace ThermalCorr
 {
@@ -71,7 +71,7 @@ and the frictional pressure gradient by
 \f]
 
 */
-double Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double x);
+double Kim_Mudawar_2012_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double beta, double x);
 
 /// Sung-Min Kim, Issam Mudawar, "Universal approach to predicting two-phase frictional pressure drop for 
 /// mini/micro-channel saturated flow boiling", International Journal of Heat and Mass Transfer 58 (2013) 718–734
@@ -83,7 +83,7 @@ double Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, d
 /// @param PH_PF Ratio of heated perimeter to wetted perimeter [-]
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
-double Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x);
+double Kim_Mudawar_2013_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x);
 
 /// Stefan S. Bertsch, Eckhard A. Groll, Suresh V. Garimella, 
 /// "A composite heat transfer correlation for saturated flow boiling in small channels"
@@ -125,7 +125,7 @@ Finally the overall two-phase heat transfer coefficient is given by
 \tilde h_{2\phi} = \tilde h_{nb}(1-x)+\tilde h_{conv,2\phi}[1+80(x^2-x^6)\exp(-0.6\mathrm{Co})]
 \f]
 */
-double Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, double Dh, double q_flux, double L, double x);
+double Bertsch_2009_HTC(CoolProp::AbstractState &AS, double G, double Dh, double q_flux, double L, double x);
 };
 };
 #endif

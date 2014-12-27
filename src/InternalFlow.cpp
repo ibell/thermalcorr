@@ -2,16 +2,15 @@
 #include "float.h"
 #include "InternalFlow.h"
 
-namespace ThermalCorr{
-namespace GeneralInternal{
-double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::HEM_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double f_tp;
 
-	double rho_f = (*CPS).rhoL();
-	double mu_f = (*CPS).viscL(); //[kg/m-s]
-	double rho_g = (*CPS).rhoV();
-	double mu_g = (*CPS).viscV(); //[kg/m-s]
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double mu_g = AS.saturated_vapor_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double sigma = AS.surface_tension(); //[N/m]
 	double v_f = 1/rho_f;
 	double v_fg = 1/rho_g-1/rho_f;
 
@@ -32,17 +31,17 @@ double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
 	return -2*f_tp*v_f*G*G/Dh*(1+x*v_fg/v_f);
 }
 
-double Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::Friedl_1979_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double f_fo,f_go;
 
-	double rho_f = (*CPS).rhoL();
-	double mu_f = (*CPS).viscL(); //[kg/m-s]
-	double rho_g = (*CPS).rhoV();
-	double mu_g = (*CPS).viscV(); //[kg/m-s]
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double mu_g = AS.saturated_vapor_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double sigma = AS.surface_tension(); //[N/m]
 	double Re_fo = G*Dh/mu_f;
 	double Re_go = G*Dh/mu_g;
-	double sigma = (*CPS).keyed_output(iI); //[N/m]
 	double rhoH = 1/(x/rho_g+(1-x)/rho_f);
 
 	if (Re_fo < 2000){
@@ -81,14 +80,14 @@ double Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double
 	return dpdz_f*two_phase_multiplier;
 }
 
-double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::Lockhart_Martinelli_1949_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double f_f,f_g,w,dpdz_f,dpdz_g,X,C,phi_g2,phi_f2;
 
-	double rho_f = (*CPS).rhoL();
-	double mu_f = (*CPS).viscL(); //[kg/m-s]
-	double rho_g = (*CPS).rhoV();
-	double mu_g = (*CPS).viscV(); //[kg/m-s] 
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double mu_g = AS.saturated_vapor_keyed_output(CoolProp::iviscosity); //[kg/m-s]
 
 	// 1. Find the Reynolds Number for each phase based on the actual flow rate of the individual phase
 	double Re_f = G*(1-x)*Dh/mu_f;
@@ -173,17 +172,16 @@ double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, doub
         return dpdz_f*phi_f2;
 	}
 }
-double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x)
+double ThermalCorr::GeneralInternal::Cavallini_2009_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x)
 {
 	double rho_GC,E_new,change;
 
-	double rho_f = (*CPS).rhoL(); // [kg/m^3]
-	double mu_f = (*CPS).viscL(); // [kg/m-s]
-	double rho_g = (*CPS).rhoV(); // [kg/m^3]
-	double mu_g = (*CPS).viscV(); // [kg/m-s]
-	double sigma = (*CPS).keyed_output(iI); //[N/m]
-
-	double pr = (*CPS).p() / (*CPS).keyed_output(iPcrit); //[-]
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double mu_g = AS.saturated_vapor_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double sigma = AS.surface_tension(); //[N/m]
+	double pr = AS.p() / AS.p_critical(); //[-]
 
 	double Re_fo = G*Dh/mu_f;
 
@@ -218,14 +216,13 @@ double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, dou
 	return dpdz_fo*two_phase_multiplier;
 }
 
-double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x)
+double ThermalCorr::GeneralInternal::Shah_1976_HTC(CoolProp::AbstractState &AS, double G, double D, double x)
 {
-
-	double mu_f = (*CPS).viscL(); //[kg/m-s]
-	double cp_f = (*CPS).cpL(); //[J/kg-K]
-	double k_f = (*CPS).condL(); //[W/m-K]
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double cp_f = AS.saturated_liquid_keyed_output(CoolProp::iCpmass);
+	double k_f = AS.saturated_liquid_keyed_output(CoolProp::iconductivity);
 	double Pr_f = cp_f * mu_f / k_f; //[-]
-	double Pstar = (*CPS).p() / (*CPS).keyed_output(iPcrit); //[-]
+	double Pstar = AS.p() / AS.p_critical(); //[-]
 
 	// Liquid heat transfer coefficient
 	double h_L = 0.023 * pow(G*D/mu_f,0.8) * pow(Pr_f,0.4) * k_f / D; //[W/m^2-K]
@@ -236,14 +233,14 @@ double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x)
 	return  HTC;
 }
 
-double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2)
+double ThermalCorr::GeneralInternal::Zivi_DPDZ_a(CoolProp::AbstractState &AS, double G, double x1, double x2)
 {
 	double term1, term2;
 	
-	double rho_f = (*CPS).rhoL();
-	double rho_g = (*CPS).rhoV();
-	double v_f = 1/(*CPS).rhoL();
-	double v_g = 1/(*CPS).rhoV();
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double v_f = 1/rho_f;
+	double v_g = 1/rho_g;
 	double S = pow(v_g/v_f,1.0/3.0);
 	
 	// Void fraction at x1
@@ -273,5 +270,3 @@ double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2)
 
 	return G*G*(term1-term2);
 }
-};
-};

@@ -1,7 +1,7 @@
 #ifndef INTERNALFLOW_H
 #define INTERNALFLOW_H
 
-#include "CoolProp/CPState.h"
+#include "AbstractState.h"
 
 namespace ThermalCorr
 {
@@ -14,7 +14,7 @@ namespace GeneralInternal
 /// @param D Diameter [m]
 /// @param x Quality [-]
 /// @return HTC Heat transfer coefficient [W/m^2/K]
-double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x);
+double Shah_1976_HTC(CoolProp::AbstractState &AS, double G, double D, double x);
 
 /// Homogeneous equilibrium model using the Adams formulation for the two-phase viscosity
 /// @param CPS CoolPropStateClassSI instance
@@ -22,7 +22,7 @@ double Shah_1976_HTC(CoolPropStateClassSI *CPS, double G, double D, double x);
 /// @param Dh Hydraulic Diameter [m]
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
-double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
+double HEM_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x);
 
 /// A. Cavallini, D. Del Col, M. Matkovic, L. Rossetto, "Frictional pressure drop during vapour-liquid flow in minichannels: Modelling
 /// and experimental evaluation", International Journal of Heat and Fluid Flow 30 (2009) 131–139
@@ -32,7 +32,7 @@ double HEM_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
 /// Erratum: log() in equation 8 for E is actually log_10, or base-10 logarithm, not natural logarithm
-double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
+double Cavallini_2009_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x);
 
 /// Frictional pressure drop of Lockhart-Martinelli in tubes
 /// Lockhart, R.W., Martinelli, R.C., 1949, Proposed Correlation of Data for Isothermal Two-Phase 
@@ -42,7 +42,7 @@ double Cavallini_2009_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, dou
 /// @param Dh Hydraulic Diameter [m]
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
-double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
+double Lockhart_Martinelli_1949_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x);
 
 /// Friedel, L. (1979) Improved friction pressure drop correlations for horizontal and vertical 
 /// two-phase pipe flow. European Two-Phase Flow Group Meeting, Ispra, Italy, paper E2
@@ -51,7 +51,7 @@ double Lockhart_Martinelli_1949_DPDZ_f(CoolPropStateClassSI *CPS, double G, doub
 /// @param Dh Hydraulic Diameter [m]
 /// @param x Quality [-]
 /// @return dpdz Pressure gradient [Pa/m]
-double Friedl_1979_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double x);
+double Friedl_1979_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double x);
 
 /// Accelerational pressure drop using the slip ratio definition of Zivi
 /// @param CPS CoolPropStateClassSI instance
@@ -87,7 +87,7 @@ where \f$\Delta p_A\f$ is negative if the pressure is dropping in going from qua
     
 is 0 or 1, one part is zero and the other is an indeterminate form of 0/0.  One evaluation of L'Hopital's rule can be used to show that if the quality is zero, the term in Equation \ref{eq:bracketedtermDPa} is equal to \f$v_f\f$, or if the quality is 1, this term is equal to \f$v_g\f$.
 */
-double Zivi_DPDZ_a(CoolPropStateClassSI *CPS, double G, double x1, double x2);
+double Zivi_DPDZ_a(CoolProp::AbstractState &AS, double G, double x1, double x2);
 };
 };
 

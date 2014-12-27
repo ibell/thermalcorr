@@ -1,7 +1,8 @@
 #ifndef THERMALCORR_BRAZED_PLATE_HEAT_EXCHANGER_H
 #define THERMALCORR_BRAZED_PLATE_HEAT_EXCHANGER_H
 
-#include "CoolProp/CPState.h"
+#include "AbstractState.h"
+#include "crossplatform_shared_ptr.h"
 
 namespace ThermalCorr
 {
@@ -64,9 +65,9 @@ namespace BrazedPlateHX
 			   HTC, ///< Heat transfer coefficient [W/m^2/K]
 			   mdot_per_channel, ///< Mass flow per channel [kg/s]
 			   DELTAP; ///< Pressure change [Pa]
-		CoolPropStateClassSI CPS;
+		shared_ptr<CoolProp::AbstractState> AS;
 	};
-	void BPHE_1phase(BPHEGeometry, BPHEData *);
+	void BPHE_1phase(BPHEGeometry, BPHEData &);
 };
 };
 #endif
