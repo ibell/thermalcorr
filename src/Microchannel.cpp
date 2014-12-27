@@ -3,18 +3,18 @@
 #include "Microchannel.h"
 #include "InternalFlow.h"
 
-double ThermalCorr::Microchannel::Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x)
+double ThermalCorr::Microchannel::Kim_Mudawar_2013_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double beta, double q_fluxH, double PH_PF, double x)
 {
 	double f_f,f_g,C,Cnon_boiling;
 	bool f_laminar, g_laminar;
 
-	double rho_f = (*CPS).rhoL();
-	double mu_f = (*CPS).viscL(); //[kg/m-s]
-	double rho_g = (*CPS).rhoV();
-	double mu_g = (*CPS).viscV(); //[kg/m-s]
-	double sigma = (*CPS).keyed_output(iI); //[N/m]
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double mu_g = AS.saturated_vapor_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double sigma = AS.surface_tension(); //[N/m]
 
-	double h_fg = ((*CPS).hV()-(*CPS).hL()); // [J/kg]
+	double h_fg = (AS.saturated_vapor_keyed_output(CoolProp::iHmass)-AS.saturated_liquid_keyed_output(CoolProp::iHmass)); // [J/kg]
 
 	double Re_f = G*(1-x)*Dh/mu_f;
 	double Re_g = G*x*Dh/mu_g;
@@ -98,16 +98,16 @@ double ThermalCorr::Microchannel::Kim_Mudawar_2013_DPDZ_f(CoolPropStateClassSI *
 	double two_phase_multiplier = 1+C/sqrt(X_squared)+1/X_squared;
 	return dpdz_f*two_phase_multiplier;
 }
-double ThermalCorr::Microchannel::Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *CPS, double G, double Dh, double beta, double x)
+double ThermalCorr::Microchannel::Kim_Mudawar_2012_DPDZ_f(CoolProp::AbstractState &AS, double G, double Dh, double beta, double x)
 {
 	double f_f,f_g,C;
 	bool f_laminar, g_laminar;
 
-	double rho_f = (*CPS).rhoL();
-	double mu_f = (*CPS).viscL(); //[kg/m-s, or Pa-s]
-	double rho_g = (*CPS).rhoV();
-	double mu_g = (*CPS).viscV(); //[kg/m-s, or Pa-s]
-	double sigma = (*CPS).keyed_output(iI); //[N/m]
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double mu_g = AS.saturated_vapor_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double sigma = AS.surface_tension(); //[N/m]
 
 	double Re_f = G*(1-x)*Dh/mu_f;
 	double Re_g = G*x*Dh/mu_g;
@@ -179,21 +179,23 @@ double ThermalCorr::Microchannel::Kim_Mudawar_2012_DPDZ_f(CoolPropStateClassSI *
 	double two_phase_multiplier = 1+C/sqrt(X_squared)+1/X_squared;
 	return dpdz_f*two_phase_multiplier;
 }
-double ThermalCorr::Microchannel::Bertsch_2009_HTC(CoolPropStateClassSI *CPS, double G, double Dh, double q_flux, double L, double x)
+double ThermalCorr::Microchannel::Bertsch_2009_HTC(CoolProp::AbstractState &AS, double G, double Dh, double q_flux, double L, double x)
 {
-	double rho_f = (*CPS).rhoL();
-	double mu_f = (*CPS).viscL(); //[kg/m-s]
-	double cp_f = (*CPS).cpL(); //[J/kg-K]
-	double k_f = (*CPS).condL(); //[W/m-K]
-	double rho_g = (*CPS).rhoV();
-	double mu_g = (*CPS).viscV(); //[kg/m-s]
-	double cp_g = (*CPS).cpV(); //[J/kg-K]
-	double k_g = (*CPS).condV(); //[W/m-K]
-	double sigma = (*CPS).keyed_output(iI); //[N/m]
+	double rho_f = AS.saturated_liquid_keyed_output(CoolProp::iDmass);
+	double mu_f = AS.saturated_liquid_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double rho_g = AS.saturated_vapor_keyed_output(CoolProp::iDmass);
+	double mu_g = AS.saturated_vapor_keyed_output(CoolProp::iviscosity); //[kg/m-s]
+	double k_f = AS.saturated_liquid_keyed_output(CoolProp::iconductivity); //[W/m/K]
+	double k_g = AS.saturated_liquid_keyed_output(CoolProp::iconductivity); //[W/m/K]
+	double cp_f = AS.saturated_liquid_keyed_output(CoolProp::iCpmass); //[J/kg/K]
+	double cp_g = AS.saturated_liquid_keyed_output(CoolProp::iCpmass); //[J/kg/K]
+	double sigma = AS.surface_tension(); //[N/m]
+
 	double Pr_f = cp_f * mu_f / k_f; //[-]
 	double Pr_g = cp_g * mu_g / k_g; //[-]
-	double pr = (*CPS).p() / (*CPS).keyed_output(iPcrit); //[-]
-	double M = (*CPS).keyed_output(iMM); //[kg/kmol]
+	double pr = AS.p() / AS.p_critical(); //[-]
+
+	double M = AS.molar_mass()*1000; //[kg/kmol]
 	double g = 9.81;
 
 	double Re_fo = G*Dh/mu_f;

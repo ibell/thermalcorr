@@ -21,4 +21,4 @@ add_library(CoolProp STATIC ${COOLPROP_SOURCES})
 add_dependencies (CoolProp generate_headers)
 
 add_executable(main "${CMAKE_SOURCE_DIR}/main.cpp")
-target_link_libraries(ThermalCorr CoolProp)
+target_link_libraries(main "$<TARGET_FILE:ThermalCorr>" "$<TARGET_FILE:CoolProp>")
